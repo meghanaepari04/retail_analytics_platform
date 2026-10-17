@@ -117,9 +117,6 @@ def kpi_card(label: str, value: str, delta: str | None = None, positive: bool = 
 
 PLOTLY_THEME = dict(
     template="plotly_dark",
-    paper_bgcolor="#0d1117",
-    plot_bgcolor="#0d1117",
-    font_color="#cbd5e1",
 )
 
 COLOR_SEQ = px.colors.qualitative.Bold
