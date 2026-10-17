@@ -114,4 +114,4 @@ pytest tests/ -v
 | 1 | ✅ | Requirements, data generator, injected defects, data dictionary, profiling notebook, schema DDL |
 | 2 | ✅ | Pandas cleaning modules, end-to-end ETL pipeline, run logging, reject tracking, constraints & indexes |
 | 3 | ✅ | 13 Reporting views, Power BI DAX & guide, 5-page interactive dashboard, DQ scorecard, 10/10 reconciliation validation, performance tuning evidence |
-| 4 | 🔄 | AI assistant (text-to-SQL & narratives), evaluation golden set, PySpark stretch job, documentation polish |
+| 4 | ✅ | AI assistant (text-to-SQL & driver analysis), 30 golden question evaluation suite (100% pass), PySpark distributed stretch job, documentation polish |

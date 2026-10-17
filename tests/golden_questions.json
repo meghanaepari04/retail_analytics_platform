@@ -1,0 +1,212 @@
+[
+  {
+    "id": "GQ01",
+    "domain": "Sales & Revenue",
+    "question": "Monthly revenue by region for 2025?",
+    "target_view": "rpt.rpt_sales_monthly_region_category",
+    "keywords": ["region", "revenue", "monthly"]
+  },
+  {
+    "id": "GQ02",
+    "domain": "Sales & Revenue",
+    "question": "Which channel generates the highest sales revenue?",
+    "target_view": "rpt.rpt_sales_daily",
+    "keywords": ["channel", "sales", "revenue"]
+  },
+  {
+    "id": "GQ03",
+    "domain": "Sales & Revenue",
+    "question": "What is our overall executive KPI summary trend?",
+    "target_view": "rpt.rpt_executive_summary",
+    "keywords": ["executive", "kpi", "summary"]
+  },
+  {
+    "id": "GQ04",
+    "domain": "Sales & Revenue",
+    "question": "Which product categories have the highest sales volume?",
+    "target_view": "rpt.rpt_sales_monthly_region_category",
+    "keywords": ["category", "sales", "revenue"]
+  },
+  {
+    "id": "GQ05",
+    "domain": "Sales & Revenue",
+    "question": "What is the daily sales and revenue breakdown by channel?",
+    "target_view": "rpt.rpt_sales_daily",
+    "keywords": ["channel", "sales", "daily"]
+  },
+  {
+    "id": "GQ06",
+    "domain": "Profitability & Margins",
+    "question": "Top 5 loss-making products this year?",
+    "target_view": "rpt.rpt_profitability_product",
+    "keywords": ["loss-making", "products"]
+  },
+  {
+    "id": "GQ07",
+    "domain": "Profitability & Margins",
+    "question": "Which products have the highest margin and profit rank?",
+    "target_view": "rpt.rpt_profitability_product",
+    "keywords": ["highest margin", "products"]
+  },
+  {
+    "id": "GQ08",
+    "domain": "Profitability & Margins",
+    "question": "What is the discount impact on profit margin across bands?",
+    "target_view": "rpt.rpt_discount_impact",
+    "keywords": ["discount", "impact", "margin"]
+  },
+  {
+    "id": "GQ09",
+    "domain": "Profitability & Margins",
+    "question": "Which products generate negative gross profit?",
+    "target_view": "rpt.rpt_profitability_product",
+    "keywords": ["negative profit", "gross profit"]
+  },
+  {
+    "id": "GQ10",
+    "domain": "Profitability & Margins",
+    "question": "What are our best margin products in retail?",
+    "target_view": "rpt.rpt_profitability_product",
+    "keywords": ["best margin", "products"]
+  },
+  {
+    "id": "GQ11",
+    "domain": "Inventory Health",
+    "question": "Which stores are at risk of stockouts next week?",
+    "target_view": "rpt.rpt_inventory_health",
+    "keywords": ["risk of stockout", "stores"]
+  },
+  {
+    "id": "GQ12",
+    "domain": "Inventory Health",
+    "question": "Which inventory items are currently out of stock?",
+    "target_view": "rpt.rpt_inventory_health",
+    "keywords": ["out of stock", "items"]
+  },
+  {
+    "id": "GQ13",
+    "domain": "Inventory Health",
+    "question": "Which products are severely overstocked with excess inventory?",
+    "target_view": "rpt.rpt_inventory_health",
+    "keywords": ["overstock", "excess inventory"]
+  },
+  {
+    "id": "GQ14",
+    "domain": "Inventory Health",
+    "question": "What items are identified as dead stock with no sales?",
+    "target_view": "rpt.rpt_inventory_health",
+    "keywords": ["dead stock", "no sales"]
+  },
+  {
+    "id": "GQ15",
+    "domain": "Inventory Health",
+    "question": "What is our inventory turnover ratio and days to sell by category?",
+    "target_view": "rpt.rpt_inventory_turnover",
+    "keywords": ["inventory turnover", "turnover ratio"]
+  },
+  {
+    "id": "GQ16",
+    "domain": "Customer Behavior",
+    "question": "Who are our at-risk high-value customers?",
+    "target_view": "rpt.rpt_customer_rfm",
+    "keywords": ["at-risk", "customers", "churn"]
+  },
+  {
+    "id": "GQ17",
+    "domain": "Customer Behavior",
+    "question": "How are customers distributed across RFM segments?",
+    "target_view": "rpt.rpt_customer_rfm",
+    "keywords": ["rfm", "segment", "customer"]
+  },
+  {
+    "id": "GQ18",
+    "domain": "Customer Behavior",
+    "question": "What is our cohort retention rate over time?",
+    "target_view": "rpt.rpt_customer_cohorts",
+    "keywords": ["cohort", "retention rate"]
+  },
+  {
+    "id": "GQ19",
+    "domain": "Customer Behavior",
+    "question": "What is the split between new vs returning customers?",
+    "target_view": "rpt.rpt_new_vs_returning",
+    "keywords": ["new vs returning", "returning customer"]
+  },
+  {
+    "id": "GQ20",
+    "domain": "Customer Behavior",
+    "question": "Who are our repeat purchase customers by RFM segment?",
+    "target_view": "rpt.rpt_customer_rfm",
+    "keywords": ["rfm", "customer"]
+  },
+  {
+    "id": "GQ21",
+    "domain": "Returns & Quality",
+    "question": "What is our return rate by product category?",
+    "target_view": "rpt.rpt_returns_analysis",
+    "keywords": ["return rate", "category"]
+  },
+  {
+    "id": "GQ22",
+    "domain": "Returns & Quality",
+    "question": "What are the primary return reasons and refund amounts?",
+    "target_view": "rpt.rpt_returns_analysis",
+    "keywords": ["return reason", "refund"]
+  },
+  {
+    "id": "GQ23",
+    "domain": "Returns & Quality",
+    "question": "Which categories have abnormal return rate percentages?",
+    "target_view": "rpt.rpt_returns_analysis",
+    "keywords": ["return rate", "returns"]
+  },
+  {
+    "id": "GQ24",
+    "domain": "Returns & Quality",
+    "question": "What is our latest data quality scorecard status?",
+    "target_view": "rpt.rpt_dq_scorecard",
+    "keywords": ["data quality", "dq", "scorecard"]
+  },
+  {
+    "id": "GQ25",
+    "domain": "Returns & Quality",
+    "question": "Which ETL rules have the highest reject rate in our pipeline?",
+    "target_view": "rpt.rpt_dq_scorecard",
+    "keywords": ["reject rate", "data quality"]
+  },
+  {
+    "id": "GQ26",
+    "domain": "Opportunities & Strategy",
+    "question": "What growth opportunities should we focus on next quarter?",
+    "target_view": "rpt.rpt_opportunities",
+    "keywords": ["opportunit", "growth", "next quarter"]
+  },
+  {
+    "id": "GQ27",
+    "domain": "Opportunities & Strategy",
+    "question": "Which products are identified as top reorder candidates?",
+    "target_view": "rpt.rpt_opportunities",
+    "keywords": ["reorder candidate", "opportunit"]
+  },
+  {
+    "id": "GQ28",
+    "domain": "Opportunities & Strategy",
+    "question": "What are our highest value strategic opportunities across regions?",
+    "target_view": "rpt.rpt_opportunities",
+    "keywords": ["opportunit", "value"]
+  },
+  {
+    "id": "GQ29",
+    "domain": "Opportunities & Strategy",
+    "question": "What is the low stock risk across regional store locations?",
+    "target_view": "rpt.rpt_inventory_health",
+    "keywords": ["low stock", "risk of stockout"]
+  },
+  {
+    "id": "GQ30",
+    "domain": "Opportunities & Strategy",
+    "question": "What is our overall company performance and executive KPI trends?",
+    "target_view": "rpt.rpt_executive_summary",
+    "keywords": ["company performance", "executive", "kpi"]
+  }
+]
