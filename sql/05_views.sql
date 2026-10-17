@@ -194,29 +194,42 @@ ORDER BY 1, 2;
 
 
 -- ── rpt_returns_analysis ────────────────────────────────────
+-- Note: returns do not carry a store_key; region is derived
+--       from the originating order via a subquery join.
 CREATE OR REPLACE VIEW rpt.rpt_returns_analysis AS
+WITH sales_by_product AS (
+    SELECT product_key, SUM(quantity) AS units_sold
+    FROM dw.fact_sales GROUP BY 1
+),
+return_region AS (
+    -- Map each return to the region of the store where the order was placed
+    SELECT DISTINCT ON (fr.return_key)
+        fr.return_key,
+        ds.region
+    FROM dw.fact_returns  fr
+    JOIN dw.fact_sales    fs ON fr.order_id     = fs.order_id
+    JOIN dw.dim_store     ds ON fs.store_key    = ds.store_key
+    ORDER BY fr.return_key, ds.region
+)
 SELECT
     dp.product_id,
-    dp.name         AS product_name,
+    dp.name             AS product_name,
     dp.category,
-    ds.region,
-    drr.reason_name AS return_reason,
+    rr.region,
+    drr.reason_name     AS return_reason,
     drr.reason_group,
     COUNT(fr.return_key)    AS return_count,
     SUM(fr.refund_amount)   AS total_refund,
-    SUM(fs_totals.units_sold) AS units_sold,
+    sbp.units_sold,
     ROUND(
-        COUNT(fr.return_key)::NUMERIC / NULLIF(SUM(fs_totals.units_sold), 0) * 100, 2
+        COUNT(fr.return_key)::NUMERIC / NULLIF(sbp.units_sold, 0) * 100, 2
     ) AS return_rate_pct
-FROM dw.fact_returns         fr
-JOIN dw.dim_product          dp  ON fr.product_key  = dp.product_key AND dp.is_current
-JOIN dw.dim_return_reason    drr ON fr.reason_key   = drr.reason_key
-LEFT JOIN dw.dim_store       ds  ON TRUE  -- returns may not have store_key; join via order
-LEFT JOIN (
-    SELECT product_key, SUM(quantity) AS units_sold
-    FROM dw.fact_sales GROUP BY 1
-) fs_totals ON fr.product_key = fs_totals.product_key
-GROUP BY 1,2,3,4,5,6;
+FROM dw.fact_returns        fr
+JOIN dw.dim_product         dp  ON fr.product_key = dp.product_key AND dp.is_current
+JOIN dw.dim_return_reason   drr ON fr.reason_key  = drr.reason_key
+LEFT JOIN return_region     rr  ON fr.return_key  = rr.return_key
+LEFT JOIN sales_by_product  sbp ON fr.product_key = sbp.product_key
+GROUP BY 1,2,3,4,5,6, sbp.units_sold;
 
 
 -- ── rpt_opportunities ───────────────────────────────────────

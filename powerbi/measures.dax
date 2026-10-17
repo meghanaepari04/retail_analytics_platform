@@ -1,0 +1,198 @@
+// ==============================================================================
+// Retail Analytics Platform — Power BI DAX Measures Library
+// Single Source of Truth Metrics (PRD §11 & §9)
+// ==============================================================================
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 1. REVENUE & FINANCIAL METRICS (Base & Time Intelligence)
+// ─────────────────────────────────────────────────────────────────────────────
+
+[Gross Revenue] = 
+SUM(dw_fact_sales[gross_amount])
+
+[Total Discount] = 
+SUM(dw_fact_sales[discount_amount])
+
+[Net Revenue] = 
+SUM(dw_fact_sales[net_amount])
+
+[COGS] = 
+SUM(dw_fact_sales[cost_amount])
+
+[Gross Profit] = 
+[Net Revenue] - [COGS]
+
+[Margin %] = 
+DIVIDE([Gross Profit], [Net Revenue], 0)
+
+[Total Orders] = 
+DISTINCTCOUNT(dw_fact_sales[order_id])
+
+[Units Sold] = 
+SUM(dw_fact_sales[quantity])
+
+[Average Order Value (AOV)] = 
+DIVIDE([Net Revenue], [Total Orders], 0)
+
+[Active Customers] = 
+DISTINCTCOUNT(dw_fact_sales[customer_key])
+
+// Prior Period & Growth Calculations
+[Net Revenue LM] = 
+CALCULATE([Net Revenue], DATEADD(dw_dim_date[date], -1, MONTH))
+
+[Net Revenue MoM Growth %] = 
+DIVIDE([Net Revenue] - [Net Revenue LM], [Net Revenue LM], 0)
+
+[Net Revenue SPLY] = 
+CALCULATE([Net Revenue], SAMEPERIODLASTYEAR(dw_dim_date[date]))
+
+[Net Revenue YoY Growth %] = 
+DIVIDE([Net Revenue] - [Net Revenue SPLY], [Net Revenue SPLY], 0)
+
+[Net Revenue YTD] = 
+TOTALYTD([Net Revenue], dw_dim_date[date])
+
+[Gross Profit YTD] = 
+TOTALYTD([Gross Profit], dw_dim_date[date])
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 2. INVENTORY HEALTH METRICS (PRD §9.2 Page 3 & §11)
+// ─────────────────────────────────────────────────────────────────────────────
+
+[Current On Hand Units] = 
+SUM(dw_fact_inventory_snapshot[on_hand])
+
+[Reserved Units] = 
+SUM(dw_fact_inventory_snapshot[reserved])
+
+[Available Units] = 
+SUM(dw_fact_inventory_snapshot[available])
+
+[Inventory Value] = 
+SUMX(
+    dw_fact_inventory_snapshot,
+    dw_fact_inventory_snapshot[on_hand] * RELATED(dw_dim_product[cost])
+)
+
+[Daily Run Rate (30D)] = 
+DIVIDE(
+    CALCULATE(
+        [Units Sold],
+        DATESINPERIOD(dw_dim_date[date], MAX(dw_dim_date[date]), -30, DAY)
+    ),
+    30,
+    0
+)
+
+[Days of Cover] = 
+DIVIDE([Available Units], [Daily Run Rate (30D)], 999)
+
+[Stockout Items Count] = 
+CALCULATE(
+    DISTINCTCOUNT(dw_fact_inventory_snapshot[product_key]),
+    dw_fact_inventory_snapshot[on_hand] = 0
+)
+
+[Stockout Rate %] = 
+DIVIDE(
+    [Stockout Items Count],
+    DISTINCTCOUNT(dw_fact_inventory_snapshot[product_key]),
+    0
+)
+
+[Overstock Items Count] = 
+CALCULATE(
+    DISTINCTCOUNT(dw_fact_inventory_snapshot[product_key]),
+    [Days of Cover] > 90
+)
+
+[Overstock Value] = 
+CALCULATE(
+    [Inventory Value],
+    FILTER(
+        dw_dim_product,
+        [Days of Cover] > 90
+    )
+)
+
+[Dead Stock Value] = 
+CALCULATE(
+    [Inventory Value],
+    FILTER(
+        dw_fact_inventory_snapshot,
+        [Daily Run Rate (30D)] = 0 && dw_fact_inventory_snapshot[on_hand] > 0
+    )
+)
+
+[Inventory Turnover Ratio] = 
+DIVIDE([COGS], [Inventory Value], 0)
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 3. CUSTOMER & RETENTION METRICS (PRD §9.2 Page 4 & §11)
+// ─────────────────────────────────────────────────────────────────────────────
+
+[Total Customers] = 
+DISTINCTCOUNT(dw_dim_customer[customer_id])
+
+[Repeat Customers] = 
+COUNTROWS(
+    FILTER(
+        VALUES(dw_fact_sales[customer_key]),
+        CALCULATE([Total Orders]) > 1
+    )
+)
+
+[Repeat Purchase Rate %] = 
+DIVIDE([Repeat Customers], [Active Customers], 0)
+
+[Customer Lifetime Value (CLV)] = 
+DIVIDE([Net Revenue], [Active Customers], 0)
+
+[Recency (Days)] = 
+DATEDIFF(
+    MAX(dw_fact_sales[order_date]),
+    TODAY(),
+    DAY
+)
+
+[Churn Risk Customers Count] = 
+COUNTROWS(
+    FILTER(
+        VALUES(dw_fact_sales[customer_key]),
+        [Recency (Days)] >= 90 && [Net Revenue] > 1000
+    )
+)
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 4. RETURNS & QUALITY METRICS (PRD §9.2 Page 5 & §11)
+// ─────────────────────────────────────────────────────────────────────────────
+
+[Returned Units] = 
+SUM(dw_fact_returns[returned_qty])
+
+[Total Refund Amount] = 
+SUM(dw_fact_returns[refund_amount])
+
+[Return Rate %] = 
+DIVIDE([Returned Units], [Units Sold], 0)
+
+[High Return Rate Flag] = 
+IF([Return Rate %] > 0.08, "High Risk", "Normal")
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 5. DATA QUALITY SCORECARD (PRD §9.2 Page 5 & §13)
+// ─────────────────────────────────────────────────────────────────────────────
+
+[DQ Total Records Processed] = 
+SUM(ops_etl_run_log[rows_read])
+
+[DQ Total Records Rejected] = 
+SUM(ops_etl_run_log[rows_rejected])
+
+[DQ Overall Reject Rate %] = 
+DIVIDE([DQ Total Records Rejected], [DQ Total Records Processed], 0)
