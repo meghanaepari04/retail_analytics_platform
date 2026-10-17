@@ -1,0 +1,44 @@
+
+# Retail Analytics Platform - Pipeline Configuration
+# Secrets (DB password, API keys) should be set via environment variables.
+
+database:
+  host: "${DB_HOST:-localhost}"
+  port: 5432
+  dbname: "${DB_NAME:-retail_analytics}"
+  user: "${DB_USER:-etl_writer}"
+  password: "${DB_PASSWORD:-changeme}"
+  pool_size: 5
+  connect_timeout: 10
+  retry_attempts: 3
+  retry_backoff_seconds: 2
+
+paths:
+  raw_data: "data/raw"
+  processed_data: "data/processed"
+  rejects: "data/rejects"
+  logs: "logs"
+
+etl:
+  reject_threshold_pct: 10      # Fail-fast if rejects exceed this %
+  batch_size: 50000             # Rows per DB insert batch
+  watermark_column: "order_date"
+
+generator:
+  seed: 42
+  num_orders: 500000
+  num_customers: 80000
+  num_products: 5000
+  num_stores: 100
+  num_returns: 60000
+  defect_rate: 0.05             # ~5% of rows get a defect injected
+
+llm:
+  provider: "openai"
+  model: "gpt-4o-mini"
+  api_key: "${OPENAI_API_KEY}"
+  max_tokens: 1024
+  timeout_seconds: 15
+  cache_ttl_seconds: 300
+  query_timeout_seconds: 10
+  max_result_rows: 500

@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs & temp
+*.log
+logs/
+
+# Raw and reject data (large artifacts)
+data/raw/*.csv
+data/processed/*.csv
+data/rejects/*.csv
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/rejects/.gitkeep
+!logs/.gitkeep
+
+# IDE & OS
+.DS_Store
+.idea/
+.vscode/
+*.swp

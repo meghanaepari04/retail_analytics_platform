@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: retail_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: retail_analytics
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d   # Auto-runs SQL files on first boot
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d retail_analytics"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  etl:
+    build:
+      context: .
+      dockerfile: Dockerfile.etl
+    container_name: retail_etl
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_NAME: retail_analytics
+      DB_USER: etl_writer
+      DB_PASSWORD: changeme_etl
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    command: ["python", "-m", "pipeline.run"]
+
+  assistant:
+    build:
+      context: .
+      dockerfile: Dockerfile.etl
+    container_name: retail_assistant
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_NAME: retail_analytics
+      DB_USER: ai_reader
+      DB_PASSWORD: changeme_ai
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    ports:
+      - "8501:8501"
+    command: ["streamlit", "run", "assistant/app.py", "--server.address=0.0.0.0"]
+
+volumes:
+  postgres_data:
